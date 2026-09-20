@@ -1,10 +1,7 @@
-FROM node:18-bullseye
+FROM node:18
 
-# Cập nhật và cài đặt FFmpeg với cờ làm sạch cache
-RUN apt-get clean && \
-    apt-get update && \
-    apt-get install -y ffmpeg && \
-    rm -rf /var/lib/apt/lists/*
+# Cài đặt FFmpeg trên nền tảng Ubuntu
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 
 # Thiết lập thư mục làm việc bên trong container
 WORKDIR /app

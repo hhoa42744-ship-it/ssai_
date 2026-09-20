@@ -4,7 +4,7 @@ const path = require("path");
 const { execFile, exec } = require("child_process");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Bật CORS để tránh mọi lỗi chặn kết nối từ trình duyệt
 app.use((req, res, next) => {
@@ -172,10 +172,12 @@ app.get("/api/stream", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`SSAI HLS Server đang chạy tại cổng ${PORT}`);{PORT}`);
+  console.log(`SSAI HLS Server đang chạy tại cổng ${PORT}`);
   
-  // Tự động mở trình duyệt trỏ thẳng vào localhost khi chạy server
-  const url = `http://localhost:${PORT}`;
-  const startCommand = process.platform === "win32" ? `start ${url}` : process.platform === "darwin" ? `open ${url}` : `xdg-open ${url}`;
-  exec(startCommand);
+  // Chỉ tự động bật trình duyệt khi chạy ở môi trường máy cá nhân (Windows/Mac)
+  if (process.platform === "win32" || process.platform === "darwin") {
+    const url = `http://localhost:${PORT}`;
+    const startCommand = process.platform === "win32" ? `start ${url}` : `open ${url}`;
+    exec(startCommand);
+  }
 });

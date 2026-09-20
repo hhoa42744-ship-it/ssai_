@@ -172,7 +172,7 @@ app.get("/api/stream", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`SSAI HLS Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`SSAI HLS Server đang chạy tại cổng ${PORT}`);{PORT}`);
   
   // Tự động mở trình duyệt trỏ thẳng vào localhost khi chạy server
   const url = `http://localhost:${PORT}`;

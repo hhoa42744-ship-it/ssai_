@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo SSAI - Bắt đầu</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      width: 420px;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    h1 { margin-bottom: 10px; font-size: 22px; }
+    p { color: #666; }
+    select, button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      background: #1769aa;
+      color: white;
+      font-weight: bold;
+    }
+    button:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>DEMO SERVER-SIDE AD INSERTION</h1>
+    <p>Chọn khu vực để bắt đầu demo</p>
+    <select id="region">
+      <option value="hanoi">Hà Nội</option>
+      <option value="danang">Đà Nẵng</option>
+    </select>
+    <button onclick="startDemo()">BẮT ĐẦU</button>
+  </div>
+  <script>
+    function startDemo() {
+      const region = document.getElementById("region").value;
+      window.location.href = `player.html?region=${region}`;
+    }
+  </script>
+</body>
+</html>

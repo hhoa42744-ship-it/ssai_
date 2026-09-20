@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo SSAI - HLS Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+    }
+    .container {
+      width: min(1000px, 92%);
+      margin: 30px auto;
+    }
+    h1 { margin-bottom: 20px; font-size: 24px; }
+    .player-box {
+      background: black;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    video { width: 100%; display: block; }
+    .info {
+      margin-top: 20px;
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .row { margin: 8px 0; }
+    .label { font-weight: bold; }
+    #status { margin-top: 15px; color: #9ca3af; }
+    .back { display: inline-block; margin-top: 20px; color: #60a5fa; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DEMO SSAI – HLS PLAYER</h1>
+    <div class="player-box">
+      <video id="video" controls></video>
+    </div>
+    <div class="info">
+      <div class="row"><span class="label">Khu vực:</span> <span id="regionInfo">Đang tải...</span></div>
+      <div class="row"><span class="label">Quảng cáo được chọn:</span> <span id="adInfo">Đang tải...</span></div>
+      <div class="row"><span class="label">Ad Break:</span> <span id="breakInfo">20 giây</span></div>
+      <div class="row"><span class="label">Main video:</span> <span id="mainInfo">43 giây</span></div>
+      <div id="status">Đang gửi yêu cầu đến Server...</div>
+    </div>
+    <a class="back" href="/">← Quay lại giao diện chọn khu vực</a>
+  </div>
+  <script>
+    let hls = null;
+    async function loadStream() {
+      const params = new URLSearchParams(window.location.search);
+      const region = params.get("region");
+      if (!region) {
+        document.getElementById("status").innerText = "Chưa có khu vực. Hãy quay lại giao diện 1.";
+        return;
+      }
+      document.getElementById("regionInfo").innerText = (region === "hanoi" ? "Hà Nội" : "Đà Nẵng");
+      try {
+        const response = await fetch(`/api/stream?region=${region}`);
+        const data = await response.json();
+        if (!data.success) {
+          document.getElementById("status").innerText = data.error;
+          return;
+        }
+        document.getElementById("adInfo").innerText = data.ad;
+        document.getElementById("breakInfo").innerText = data.adBreak;
+        document.getElementById("mainInfo").innerText = data.mainDuration;
+        document.getElementById("status").innerText = "Server đã tạo HLS. Đang phát video...";
+        
+        const video = document.getElementById("video");
+        const url = data.playlist;
+        if (Hls.isSupported()) {
+          hls = new Hls();
+          hls.loadSource(url);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            video.play();
+          });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = url;
+          video.play();
+        } else {
+          document.getElementById("status").innerText = "Trình duyệt không hỗ trợ HLS.";
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById("status").innerText = "Không kết nối được Server.";
+      }
+    }
+    loadStream();
+  </script>
+</body>
+</html>
